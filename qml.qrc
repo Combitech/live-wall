@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/cover.jpg</file>
+        <file>qml/FadeInOutImage.qml</file>
+        <file>qml/main.qml</file>
+    </qresource>
+</RCC>
