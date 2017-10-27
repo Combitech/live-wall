@@ -29,9 +29,14 @@ bool SpotifyApi::userData(QOAuth2AuthorizationCodeFlow *token)
             const auto root = document.object();
             const auto images = root.value("images").toArray();
 
+            QString displayName = root.value("display_name").toString();
+            if (displayName.isEmpty()) {
+                displayName = root.value("id").toString();
+            }
+
             emit userDataReceived(token,
                                   root.value("id").toString(),
-                                  root.value("display_name").toString(),
+                                  displayName,
                                   QUrl(images.first().toObject().value("url").toString()));
         }
         reply->deleteLater();
