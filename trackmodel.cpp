@@ -6,7 +6,7 @@ TrackModel::TrackModel()
     : QAbstractTableModel()
     , m_token(Q_NULLPTR)
 {
-    m_refreshTimer.setInterval(10*1000);
+    m_refreshTimer.setInterval(3 * 60 * 1000);
     connect(&m_refreshTimer, &QTimer::timeout,
             this, &TrackModel::fetchTracks);
     connect(&m_api, &SpotifyApi::trackReceived,
