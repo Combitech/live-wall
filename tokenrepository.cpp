@@ -67,7 +67,7 @@ QOAuth2AuthorizationCodeFlow* TokenRepository::token(const QString username,
     token->setRefreshToken(refreshToken);
     token->setProperty("username", username);
     token->setModifyRequestFunction([=](QAbstractOAuth::Stage stage, QNetworkRequest *request) {
-        qDebug() << Q_FUNC_INFO << (int)stage;
+        qDebug() << Q_FUNC_INFO << static_cast<int>(stage);
         if (request && stage == QAbstractOAuth::Stage::RefreshingAccessToken) {
             QByteArray b = m_clientId.toLatin1() + ":" +
                            m_clientSecret.toLatin1();
