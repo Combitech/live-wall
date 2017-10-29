@@ -191,7 +191,7 @@ QHash<int, QByteArray> TrackModel::roleNames() const
     QHash<int, QByteArray> roles;
     roles[IdRole] = "trackId";
     roles[TitleRole] = "trackTitle";
-    roles[ArtistsRole] = "artists";
+    roles[ArtistsRole] = "trackArtists";
     roles[CoverRole] = "trackCover";
     roles[LiveRole] = "live";
     return roles;
