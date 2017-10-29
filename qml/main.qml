@@ -104,6 +104,8 @@ Window {
                 onTriggered: {
                     var rand = Math.floor(Math.random() * trackModelDelegate.items.count)
                     imgCover.source = trackModelDelegate.items.get(rand).model.trackCover
+                    txtArtist.text = trackModelDelegate.items.get(rand).model.trackArtists
+                    txtTitle.text = trackModelDelegate.items.get(rand).model.trackTitle
                 }
             }
 
@@ -156,8 +158,6 @@ Window {
                 font.pixelSize: 30
                 fontSizeMode: Text.Fit
                 color: "white"
-                //text: title
-
             }
             Text {
                 id: txtArtist
@@ -169,7 +169,6 @@ Window {
                 font.pixelSize: 30
                 fontSizeMode: Text.Fit
                 color: "white"
-                //text: title
             }
 
             Text {
