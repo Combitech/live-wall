@@ -5,6 +5,7 @@
 #include <QUrl>
 #include <QDateTime>
 
+
 class QOAuth2AuthorizationCodeFlow;
 class SpotifyApi : public QObject
 {
@@ -16,16 +17,19 @@ public:
 public slots:
     bool userData(QOAuth2AuthorizationCodeFlow *token);
     bool recentlyPlayed(QOAuth2AuthorizationCodeFlow* token);
-    bool trackImageUrl(QOAuth2AuthorizationCodeFlow* token, QString trackId);
+    bool trackImageUrl(QOAuth2AuthorizationCodeFlow* token, QByteArray trackId);
     bool liveTrack(QOAuth2AuthorizationCodeFlow* token);
 
 signals:
     void userDataReceived(QOAuth2AuthorizationCodeFlow *token,
                           QString username, QString displayName, QUrl avatar);
-    void trackReceived(QString trackId, QString title, QStringList artists,
+    void trackReceived(QByteArray trackId, QString title, QStringList artists,
                        QDateTime playedAt, bool live);
     void allTrackReceived();
-    void trackImageUrlReceived(QString trackId, QUrl url);
+    void trackImageUrlReceived(QByteArray trackId, QUrl url);
+
+private:
+    void parseTrackInfo(const QByteArray trackId, const QByteArray data);
 };
 
 #endif // SPOTIFYAPI_H

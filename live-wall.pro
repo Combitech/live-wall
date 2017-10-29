@@ -1,4 +1,4 @@
-QT += quick network networkauth webengine
+QT += quick network networkauth webengine sql
 CONFIG += c++11
 
 # The following define makes your compiler emit warnings if you use
@@ -17,7 +17,8 @@ SOURCES += main.cpp \
     spotifyapi.cpp \
     usermodel.cpp \
     trackmodel.cpp \
-    clientidentifier.cpp
+    clientidentifier.cpp \
+    trackcache.cpp
 
 RESOURCES += qml.qrc
 
@@ -38,4 +39,5 @@ HEADERS += \
     spotifyapi.h \
     usermodel.h \
     trackmodel.h \
-    clientidentifier.h
+    clientidentifier.h \
+    trackcache.h

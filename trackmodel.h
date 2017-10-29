@@ -58,7 +58,7 @@ signals:
 
 private slots:
     void fetchTracks();
-    void trackReceived(QString trackId, QString title,
+    void trackReceived(QByteArray trackId, QString title,
                        QStringList artists, QDateTime playedAt, bool live);
     void allTrackReceived();
     void trackImageUrlReceived(QString trackId, QUrl url);

@@ -7,6 +7,8 @@
 #include <QJsonArray>
 #include <QOAuth2AuthorizationCodeFlow>
 
+#include "trackcache.h"
+
 SpotifyApi::SpotifyApi(QObject *parent) : QObject(parent)
 {
 }
@@ -70,7 +72,7 @@ bool SpotifyApi::recentlyPlayed(QOAuth2AuthorizationCodeFlow *token)
                     auto artist = *artistIt;
                     artistList << artist.toObject().value("name").toString();
                 }
-                emit trackReceived(track.value("id").toString(),
+                emit trackReceived(track.value("id").toString().toLatin1(),
                                    track.value("name").toString(),
                                    artistList,
                                    QDateTime::fromString(item.toObject().value("played_at").toString(),
@@ -85,34 +87,49 @@ bool SpotifyApi::recentlyPlayed(QOAuth2AuthorizationCodeFlow *token)
     return true;
 }
 
-bool SpotifyApi::trackImageUrl(QOAuth2AuthorizationCodeFlow *token, QString trackId)
+bool SpotifyApi::trackImageUrl(QOAuth2AuthorizationCodeFlow *token, QByteArray trackId)
 {
-    QString urlStr = QString("https://api.spotify.com/v1/tracks/%1").arg(trackId);
-    QUrl url(urlStr);
-    QNetworkReply *reply = token->get(url);
+    // Chech if we have this in cache already
+    QByteArray cacheData = TrackCache::instrance()->trackInfo(trackId);
 
-    connect(reply, &QNetworkReply::finished, [=]() {
-        if (reply->error() != QNetworkReply::NoError) {
-            qDebug() << Q_FUNC_INFO << reply->errorString() << reply->error();
-        } else {
-            const auto data = reply->readAll();
-            const auto document = QJsonDocument::fromJson(data);
-            const auto root = document.object();
-            const auto album = root.value("album").toObject();
-            const auto images = album.value("images").toArray();
-            for (auto it = images.constBegin(); it!=images.constEnd(); ++it) {
-                auto img = *it;
-                int height = img.toObject().value("height").toInt();
-                if (height > 250 && height < 350) {
-                    emit trackImageUrlReceived(trackId,
-                                               QUrl(img.toObject().value("url").toString()));
-                }
+    if (cacheData.isEmpty()) {
+        QString urlStr = "https://api.spotify.com/v1/tracks/" + QString::fromLatin1(trackId);
+        QUrl url(urlStr);
+        QNetworkReply *reply = token->get(url);
+
+        connect(reply, &QNetworkReply::finished, [=]() {
+            if (reply->error() != QNetworkReply::NoError) {
+                qDebug() << Q_FUNC_INFO << reply->errorString() << reply->error();
+            } else {
+                const auto data = reply->readAll();
+
+                //Insert into cache
+                TrackCache::instrance()->addTrack(trackId, data);
+
+                parseTrackInfo(trackId, data);
             }
-        }
-        reply->deleteLater();
-
-    });
+            reply->deleteLater();
+        });
+    } else {
+        parseTrackInfo(trackId, cacheData);
+    }
     return true;
+}
+
+void SpotifyApi::parseTrackInfo(const QByteArray trackId, const QByteArray data)
+{
+    const auto document = QJsonDocument::fromJson(data);
+    const auto root = document.object();
+    const auto album = root.value("album").toObject();
+    const auto images = album.value("images").toArray();
+    for (auto it = images.constBegin(); it!=images.constEnd(); ++it) {
+        auto img = *it;
+        int height = img.toObject().value("height").toInt();
+        if (height > 250 && height < 350) {
+            emit trackImageUrlReceived(trackId,
+                                       QUrl(img.toObject().value("url").toString()));
+        }
+    }
 }
 
 bool SpotifyApi::liveTrack(QOAuth2AuthorizationCodeFlow *token)

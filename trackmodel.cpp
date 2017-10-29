@@ -72,7 +72,7 @@ void TrackModel::fetchTracks()
     //m_api.liveTrack(m_token);
 }
 
-void TrackModel::trackReceived(QString trackId, QString title, QStringList artists,
+void TrackModel::trackReceived(QByteArray trackId, QString title, QStringList artists,
                                QDateTime playedAt, bool live)
 {
     if (!m_tracks.contains(trackId)) {
