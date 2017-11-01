@@ -3,5 +3,10 @@
         <file>qml/cover.jpg</file>
         <file>qml/FadeInOutImage.qml</file>
         <file>qml/main.qml</file>
+        <file>qml/background.jpg</file>
+        <file>qml/starfish.png</file>
+        <file>qml/r2d2.png</file>
+        <file>qml/star.png</file>
+        <file>qml/bigstar.png</file>
     </qresource>
 </RCC>
